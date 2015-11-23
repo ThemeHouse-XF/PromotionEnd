@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon addon_id="ThemeHouse_PromotionEnd" title="[⌂] Promotion End Dates" version_string="1.0.0" version_id="1447261019" url="http://xf.themehouse.io" install_callback_class="ThemeHouse_Install" install_callback_method="install" uninstall_callback_class="ThemeHouse_Install" uninstall_callback_method="uninstall">
+  <admin_navigation/>
+  <admin_permissions/>
+  <admin_style_properties/>
+  <admin_templates>
+    <template title="th_edit_end_date_promotionenddate"><![CDATA[<xen:form action="{xen:adminlink 'user-group-promotions/edit/end/date', '', 'user_id={$user.user_id}', 'promotion_id={$promotion.promotion_id}'}">
+
+	<xen:h1>{xen:phrase th_edit_end_date_promotionenddate}</xen:h1>
+
+	<xen:textboxunit label="{xen:phrase end_date}:" type="date" name="end_date" value="{$promotion.promotion_end_date}" >
+		<xen:explain>{xen:phrase th_edit_end_date_explain_promotionenddate}</xen:explain>
+	</xen:textboxunit>
+
+	
+	<xen:submitunit save="{xen:phrase save}" />
+
+	<input type="hidden" name="_xfConfirm" value="1" />
+	<input type="hidden" name="redirect" value="{$redirect}" />
+</xen:form>]]></template>
+  </admin_templates>
+  <admin_template_modifications>
+    <modification template="user_group_promotion_history" modification_key="th_userGroupPromHistory_promotionEndDate" description="Adds the Edit End Date button" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#(<xen:listitem[^>]*>\s*<xen:label>.*<span class="secondRow">\s*)(<xen:datetime[^>]*>)(.*</span>\s*</xen:label>\s*)(</xen:listitem>)#Us]]></find>
+      <replace><![CDATA[${1}<span class="faint">{xen:phrase th_started_promotionenddate}: </span>${2}
+{xen:if {$entry.promotion_end_date}, '<span class="faint"> - {xen:phrase th_ending_on_promotionenddate}:</span> {xen:helper datetimehtml, {$entry.promotion_end_date}, {xen:array 'class=faint'}}'}
+${3}
+<xen:html>
+	<xen:if is="{$entry.promotion_end_date}">
+		<a href="{xen:adminlink user-group-promotions/edit/end/date, '', 'user_id={$entry.user_id}', 'promotion_id={$entry.promotion_id}'}" class="secondaryContent OverlayTrigger">{xen:phrase th_edit_end_date_promotionenddate}</a>
+	</xen:if>
+</xen:html>
+${4}]]></replace>
+    </modification>
+    <modification template="user_group_promotion_manage" modification_key="th_userGroupPromotionManage_promotionEndDate" description="Addition of End Dates field" execution_order="10" enabled="1" action="preg_replace">
+      <find><![CDATA[#<xen:selectunit label="{xen:phrase promotion}:" name="promotion_id">.*</xen:selectunit>#Us]]></find>
+      <replace><![CDATA[${0}
+<xen:textboxunit type="date" label="{xen:phrase end_date}:" hint="{xen:phrase you_may_leave_this_blank}" name="end_date"  />]]></replace>
+    </modification>
+  </admin_template_modifications>
+  <code_events/>
+  <code_event_listeners>
+    <listener event_id="controller_pre_dispatch" execute_order="10" callback_class="ThemeHouse_Listener_ControllerPreDispatch" callback_method="controllerPreDispatch" active="1" hint="" description=""/>
+    <listener event_id="file_health_check" execute_order="10" callback_class="ThemeHouse_PromotionEnd_Listener_FileHealthCheck" callback_method="fileHealthCheck" active="1" hint="" description=""/>
+    <listener event_id="init_dependencies" execute_order="10" callback_class="ThemeHouse_Listener_InitDependencies" callback_method="initDependencies" active="1" hint="" description=""/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_PromotionEnd_Listener_LoadClass" callback_method="loadClassController" active="0" hint="XenForo_ControllerAdmin_UserGroupPromotion" description="XenForo_ControllerAdmin_UserGroupPromotion (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_PromotionEnd_Listener_LoadClass" callback_method="loadClassDataWriter" active="0" hint="XenForo_DataWriter_UserGroupPromotion" description="XenForo_DataWriter_UserGroupPromotion (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class" execute_order="10" callback_class="ThemeHouse_PromotionEnd_Listener_LoadClass" callback_method="loadClassModel" active="0" hint="XenForo_Model_UserGroupPromotion" description="XenForo_Model_UserGroupPromotion (For XenForo 1.2 and above)" compatibility_switch="1"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="ThemeHouse_PromotionEnd_Listener_LoadClass" callback_method="loadClassController" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_datawriter" execute_order="10" callback_class="ThemeHouse_PromotionEnd_Listener_LoadClass" callback_method="loadClassDataWriter" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="ThemeHouse_PromotionEnd_Listener_LoadClass" callback_method="loadClassModel" active="1" hint="" description="(For XenForo 1.1 and below)" compatibility_switch="1"/>
+  </code_event_listeners>
+  <cron>
+    <entry entry_id="th_promotionEndDate" cron_class="ThemeHouse_PromotionEnd_CronEntry_PromotionEndDate" cron_method="runUserDowngrade" active="1"><![CDATA[{"day_type":"dom","dom":["-1"],"hours":["1"],"minutes":["15"]}]]></entry>
+  </cron>
+  <email_templates/>
+  <email_template_modifications/>
+  <optiongroups/>
+  <permissions>
+    <permission_groups/>
+    <permissions/>
+    <interface_groups/>
+  </permissions>
+  <phrases>
+    <phrase title="cron_entry_th_promotionEndDate" version_id="1382467909" version_string="1.0.0"><![CDATA[Downgrade Expired User Group Promotions]]></phrase>
+    <phrase title="th_edit_end_date_explain_promotionenddate" version_id="1382361405" version_string="1.0.0"><![CDATA[This is the date that the promotion will end on. ]]></phrase>
+    <phrase title="th_edit_end_date_promotionenddate" version_id="1382361405" version_string="1.0.0"><![CDATA[Edit End Date]]></phrase>
+    <phrase title="th_edit_promotion_end_date_of_promotionenddate" version_id="0" version_string="1.0.0"><![CDATA[Edit Promotion End Date of]]></phrase>
+    <phrase title="th_ending_on_promotionenddate" version_id="1382361405" version_string="1.0.0"><![CDATA[Ending on]]></phrase>
+    <phrase title="th_end_dates_can_only_be_used_to_promote_users_promotionenddate" version_id="0" version_string="1.0.0"><![CDATA[End dates can only be used to promote users]]></phrase>
+    <phrase title="th_end_date_cannot_be_in_the_past_promotionenddate" version_id="0" version_string="1.0.0"><![CDATA[End date cannot be in the past]]></phrase>
+    <phrase title="th_promotion_length_must_be_at_least_one_day_promotionenddate" version_id="0" version_string="1.0.0"><![CDATA[Promotion length must be at least one day]]></phrase>
+    <phrase title="th_started_promotionenddate" version_id="1382361405" version_string="1.0.0"><![CDATA[Started]]></phrase>
+  </phrases>
+  <route_prefixes/>
+  <style_properties/>
+  <templates/>
+  <public_template_modifications>
+    <modification template="footer" modification_key="th_copyrightNotice_promotionEnd" description="Copyright notice for [⌂] Promotion End Dates" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase (?:xenforo|extra)_copyright}/]]></find>
+      <replace><![CDATA[ThemeHouse_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+    <modification template="footer" modification_key="th_copyrightNotice_promotionEndDate" description="Copyright notice for Promotion End Dates by ThemeHouse" execution_order="1" enabled="1" action="callback">
+      <find><![CDATA[/{xen:phrase xenforo_copyright}/]]></find>
+      <replace><![CDATA[ThemeHouse_Listener_InitDependencies::copyrightNotice]]></replace>
+    </modification>
+  </public_template_modifications>
+  <bb_code_media_sites/>
+  <bb_codes/>
+</addon>
